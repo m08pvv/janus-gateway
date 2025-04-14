@@ -2720,6 +2720,7 @@ static void janus_videoroom_publisher_stream_free(const janus_refcount *ps_ref) 
 	janus_videoroom_publisher_stream *ps = janus_refcount_containerof(ps_ref, janus_videoroom_publisher_stream, ref);
 	/* This publisher stream can be destroyed, free all the resources */
 		/* TODO Anything else we should free? */
+	janus_refcount_decrease(&ps->publisher->ref);
 	g_free(ps->mid);
 	g_free(ps->description);
 	g_free(ps->fmtp);
@@ -11011,8 +11012,6 @@ static void *janus_videoroom_handler(void *data) {
 						participant->recording_active ? "true" : "false", participant->room_id_str, participant->user_id_str);
 				}
 				if(recfile && !record_locked) {
-					JANUS_PRINT("[%s:%s:%d] setting participant->recording_base (prev value is '%s') \n", __FILE__, __FUNCTION__, __LINE__, 
-						participant->recording_base == NULL? "NULL" : participant->recording_base);
 					participant->recording_base = g_strdup(json_string_value(recfile));
 					JANUS_LOG(LOG_VERB, "Setting recording basename: %s (room %s, user %s)\n",
 						participant->recording_base, participant->room_id_str, participant->user_id_str);
@@ -13079,8 +13078,6 @@ static void *janus_videoroom_handler(void *data) {
 							const char *d_mid = json_string_value(json_object_get(d, "mid"));
 							const char *d_desc = json_string_value(json_object_get(d, "description"));
 							if(d_desc && d_mid && ps->mid && !strcasecmp(d_mid, ps->mid)) {
-								JANUS_PRINT("[%s:%s:%d] setting ps->description (prev value is '%s') \n", __FILE__, __FUNCTION__, __LINE__, 
-									ps->description == NULL? "NULL" : ps->description);
 								ps->description = g_strdup(d_desc);
 								break;
 							}
