@@ -3235,8 +3235,8 @@ static void janus_videoroom_create_dummy_publisher(janus_videoroom *room, GHashT
 		ps->max_delay = -1;
 		g_atomic_int_set(&ps->destroyed, 0);
 		janus_refcount_init(&ps->ref, janus_videoroom_publisher_stream_free);
-		janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
-		janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
+		//janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
+		//janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
 		janus_mutex_init(&ps->subscribers_mutex);
 		janus_mutex_init(&ps->rtp_forwarders_mutex);
 		janus_mutex_init(&ps->rid_mutex);
@@ -3302,7 +3302,7 @@ static janus_videoroom_subscriber_stream *janus_videoroom_subscriber_stream_add(
 	stream->send = TRUE;
 	g_atomic_int_set(&stream->destroyed, 0);
 	janus_refcount_init(&stream->ref, janus_videoroom_subscriber_stream_free);
-	janus_refcount_increase(&stream->ref);	/* This is for the mid-indexed hashtable */
+	//janus_refcount_increase(&stream->ref);	/* This is for the mid-indexed hashtable */
 	janus_rtp_simulcasting_context_reset(&stream->sim_context);
 	stream->sim_context.rid_ext_id = ps->rid_extmap_id;
 	stream->sim_context.substream_target = 2;
@@ -7957,8 +7957,8 @@ static json_t *janus_videoroom_process_synchronous_request(janus_videoroom_sessi
 			}
 			g_atomic_int_set(&ps->destroyed, 0);
 			janus_refcount_init(&ps->ref, janus_videoroom_publisher_stream_free);
-			janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
-			janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
+			//janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
+			//janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
 			janus_mutex_init(&ps->subscribers_mutex);
 			janus_mutex_init(&ps->rtp_forwarders_mutex);
 			ps->rtp_forwarders = g_hash_table_new_full(NULL, NULL, NULL, (GDestroyNotify)janus_rtp_forwarder_destroy);
@@ -8318,8 +8318,8 @@ static json_t *janus_videoroom_process_synchronous_request(janus_videoroom_sessi
 			}
 			g_atomic_int_set(&ps->destroyed, 0);
 			janus_refcount_init(&ps->ref, janus_videoroom_publisher_stream_free);
-			janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
-			janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
+			//janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
+			//janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
 			janus_mutex_init(&ps->subscribers_mutex);
 			janus_mutex_init(&ps->rtp_forwarders_mutex);
 			ps->rtp_forwarders = g_hash_table_new_full(NULL, NULL, NULL, (GDestroyNotify)janus_rtp_forwarder_destroy);
