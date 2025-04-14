@@ -3248,7 +3248,7 @@ static void janus_videoroom_create_dummy_publisher(janus_videoroom *room, GHashT
 	}
 	/* Done: add the dummy publisher to the list */
 	janus_refcount_increase(&publisher->ref);
-	janus_refcount_increase(&publisher->session->ref);
+	//janus_refcount_increase(&publisher->session->ref;
 	g_hash_table_insert(room->participants,
 		string_ids ? (gpointer)g_strdup(publisher->user_id_str) : (gpointer)janus_uint64_dup(publisher->user_id),
 		publisher);
