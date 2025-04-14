@@ -2720,9 +2720,8 @@ static void janus_videoroom_publisher_stream_free(const janus_refcount *ps_ref) 
 	janus_videoroom_publisher_stream *ps = janus_refcount_containerof(ps_ref, janus_videoroom_publisher_stream, ref);
 	/* This publisher stream can be destroyed, free all the resources */
 		/* TODO Anything else we should free? */
-	janus_videoroom_publisher *p = &ps->publisher;
-	if (p)
-		janus_refcount_decrease(p->ref);
+	if(ps->publisher)
+		janus_refcount_decrease(&ps->publisher->ref);
 	g_free(ps->mid);
 	g_free(ps->description);
 	g_free(ps->fmtp);
