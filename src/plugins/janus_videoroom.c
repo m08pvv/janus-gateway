@@ -3300,7 +3300,7 @@ static janus_videoroom_subscriber_stream *janus_videoroom_subscriber_stream_add(
 	stream->send = TRUE;
 	g_atomic_int_set(&stream->destroyed, 0);
 	janus_refcount_init(&stream->ref, janus_videoroom_subscriber_stream_free);
-	//janus_refcount_increase(&stream->ref);	/* This is for the mid-indexed hashtable */
+	janus_refcount_increase(&stream->ref);	/* This is for the mid-indexed hashtable */
 	janus_rtp_simulcasting_context_reset(&stream->sim_context);
 	stream->sim_context.rid_ext_id = ps->rid_extmap_id;
 	stream->sim_context.substream_target = 2;
