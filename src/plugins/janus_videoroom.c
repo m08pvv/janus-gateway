@@ -3123,7 +3123,7 @@ static void janus_videoroom_create_dummy_publisher(janus_videoroom *room, GHashT
 	publisher->room_id = room->room_id;
 	publisher->room_id_str = room->room_id_str ? g_strdup(room->room_id_str) : NULL;
 	publisher->room = room;
-	janus_refcount_increase(&room->ref);
+	//janus_refcount_increase(&room->ref);
 	publisher->user_id = janus_random_uint64();
 	char user_id_num[30];
 	g_snprintf(user_id_num, sizeof(user_id_num), "%"SCNu64, publisher->user_id);
