@@ -3169,7 +3169,7 @@ static void janus_videoroom_create_dummy_publisher(janus_videoroom *room, GHashT
 		g_snprintf(mid, sizeof(mid), "%d", mindex);
 		ps->mid = g_strdup(mid);
 		ps->publisher = publisher;
-		janus_refcount_increase(&publisher->ref);	/* Add a reference to the publisher */
+		//janus_refcount_increase(&publisher->ref);	/* Add a reference to the publisher */
 		ps->active = TRUE;
 		ps->acodec = room->acodec[i];
 		ps->vcodec = JANUS_VIDEOCODEC_NONE;
@@ -3189,8 +3189,8 @@ static void janus_videoroom_create_dummy_publisher(janus_videoroom *room, GHashT
 		ps->max_delay = -1;
 		g_atomic_int_set(&ps->destroyed, 0);
 		janus_refcount_init(&ps->ref, janus_videoroom_publisher_stream_free);
-		//janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
-		//janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
+		janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
+		janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
 		janus_mutex_init(&ps->subscribers_mutex);
 		janus_mutex_init(&ps->rtp_forwarders_mutex);
 		janus_mutex_init(&ps->rid_mutex);
@@ -3215,7 +3215,7 @@ static void janus_videoroom_create_dummy_publisher(janus_videoroom *room, GHashT
 		g_snprintf(mid, sizeof(mid), "%d", mindex);
 		ps->mid = g_strdup(mid);
 		ps->publisher = publisher;
-		janus_refcount_increase(&publisher->ref);	/* Add a reference to the publisher */
+		//janus_refcount_increase(&publisher->ref);	/* Add a reference to the publisher */
 		ps->active = TRUE;
 		ps->acodec = JANUS_AUDIOCODEC_NONE;
 		ps->vcodec = room->vcodec[i];
@@ -3236,8 +3236,8 @@ static void janus_videoroom_create_dummy_publisher(janus_videoroom *room, GHashT
 		ps->max_delay = -1;
 		g_atomic_int_set(&ps->destroyed, 0);
 		janus_refcount_init(&ps->ref, janus_videoroom_publisher_stream_free);
-		//janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
-		//janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
+		janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
+		janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
 		janus_mutex_init(&ps->subscribers_mutex);
 		janus_mutex_init(&ps->rtp_forwarders_mutex);
 		janus_mutex_init(&ps->rid_mutex);
@@ -3248,8 +3248,8 @@ static void janus_videoroom_create_dummy_publisher(janus_videoroom *room, GHashT
 		mindex++;
 	}
 	/* Done: add the dummy publisher to the list */
-	//janus_refcount_increase(&publisher->ref);
-	//janus_refcount_increase(&publisher->session->ref;
+	janus_refcount_increase(&publisher->ref);
+	janus_refcount_increase(&publisher->session->ref);
 	g_hash_table_insert(room->participants,
 		string_ids ? (gpointer)g_strdup(publisher->user_id_str) : (gpointer)janus_uint64_dup(publisher->user_id),
 		publisher);
@@ -7877,7 +7877,7 @@ static json_t *janus_videoroom_process_synchronous_request(janus_videoroom_sessi
 			g_snprintf(mid, sizeof(mid), "%d", mindex);
 			ps->mid = g_strdup(mid);
 			ps->publisher = publisher;
-			janus_refcount_increase(&publisher->ref);	/* Add a reference to the publisher */
+			//janus_refcount_increase(&publisher->ref);	/* Add a reference to the publisher */
 			ps->description = desc ? g_strdup(desc) : NULL;
 			ps->active = TRUE;
 			ps->disabled = disabled;
@@ -7958,8 +7958,8 @@ static json_t *janus_videoroom_process_synchronous_request(janus_videoroom_sessi
 			}
 			g_atomic_int_set(&ps->destroyed, 0);
 			janus_refcount_init(&ps->ref, janus_videoroom_publisher_stream_free);
-			//janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
-			//janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
+			janus_refcount_increase(&ps->ref);	/* This is for the id-indexed hashtable */
+			janus_refcount_increase(&ps->ref);	/* This is for the mid-indexed hashtable */
 			janus_mutex_init(&ps->subscribers_mutex);
 			janus_mutex_init(&ps->rtp_forwarders_mutex);
 			ps->rtp_forwarders = g_hash_table_new_full(NULL, NULL, NULL, (GDestroyNotify)janus_rtp_forwarder_destroy);
@@ -8238,7 +8238,7 @@ static json_t *janus_videoroom_process_synchronous_request(janus_videoroom_sessi
 			g_snprintf(pmid, sizeof(pmid), "%d", mindex);
 			ps->mid = g_strdup(pmid);
 			ps->publisher = publisher;
-			janus_refcount_increase(&publisher->ref);	/* Add a reference to the publisher */
+			//janus_refcount_increase(&publisher->ref);	/* Add a reference to the publisher */
 			ps->description = desc ? g_strdup(desc) : NULL;
 			ps->active = TRUE;
 			ps->disabled = disabled;
