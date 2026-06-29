@@ -4090,7 +4090,10 @@ ldd janus | grep asan
  *    - Presentation on experimental SIP trunking support in the SIP plugin at <a href="https://www.youtube.com/watch?v=_e0fWnWWOeY&t=3855s">Kamailio World 2024</a>;
  *    - Presentation on prototyping an interaction between WebRTC and QUIC (RTP Over QUIC, Media Over QUIC) at <a href="https://www.youtube.com/watch?v=bq9LRCfxz_E">RTC.ON 2024</a>;
  *    - Presentation on RTP Over QUIC at <a href="https://www.youtube.com/watch?v=J0_4nO5a4ZI">Kamailio World 2025</a>;
- *    - Presentation on multistream support in the SIP and NoSIP plugins at <a href="https://www.youtube.com/live/lN96vOjhhhI?si=wiwS0KbyFBYRF9ez&t=1751">OpenSIPS Summit 2025</a>. \n\n
+ *    - Presentation on multistream support in the SIP and NoSIP plugins at <a href="https://www.youtube.com/live/lN96vOjhhhI?si=wiwS0KbyFBYRF9ez&t=1751">OpenSIPS Summit 2025</a>;
+ *    - Presentation on RTP forwarders support in the SIP and NoSIP plugins at <a href="https://www.youtube.com/watch?v=CsGf0fudVXE&t=8208s">OpenSIPS Summit 2026</a>;
+ *    - Workshop on RTP Over QUIC and its integration in Janus at <a href="https://www.youtube.com/watch?v=1m9vrvvI9fY&t=3681s">OpenSIPS Summit 2026</a>;
+ *    - Presentation on Juturna and using it with Janus at <a href="https://www.youtube.com/watch?v=UUcJ1aB4u8I">Kamailio World 2026</a>. \n\n
  *    Apart from these presentations, make sure you also check the slides
  *    and presentations from <a href="https://januscon.it">JanusCon</a> (including the
  *    <a href="https://januscon.it/2019">2019 edition</a>),
