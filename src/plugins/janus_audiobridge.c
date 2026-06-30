@@ -473,36 +473,7 @@ room-<unique room ID>: {
 			"pin_required" : <true|false, whether a PIN is required to join this room>,
 			"sampling_rate" : <sampling rate of the mixer>,
 			"spatial_audio" : <true|false, whether the mix has spatial audio (stereo)>,
-			"record" : <true|false, whether the room is being recorded>,
-			"num_participants" : <count of the participants>
-		},
-		// Other rooms
-	]
-}
-\endverbatim
- *
- * To get a list of the available rooms (excluded those configured or
- * created as private rooms) you can make use of the \c list request,
- * which has to be formatted as follows:
- *
-\verbatim
-{
-	"request" : "list"
-}
-\endverbatim
- *
- * A successful request will produce a list of rooms in a \c success response:
- *
-\verbatim
-{
-	"audiobridge" : "success",
-	"rooms" : [		// Array of room objects
-		{	// Room #1
-			"room" : <unique numeric ID>,
-			"description" : "<Name of the room>",
-			"pin_required" : <true|false, whether a PIN is required to join this room>,
-			"sampling_rate" : <sampling rate of the mixer>,
-			"spatial_audio" : <true|false, whether the mix has spatial audio (stereo)>,
+			"use_limiter" : <true|false, whether audio limiter is enabled for this room>
 			"record" : <true|false, whether the room is being recorded>,
 			"num_participants" : <count of the participants>
 		},
@@ -4135,6 +4106,7 @@ static json_t *janus_audiobridge_process_synchronous_request(janus_audiobridge_s
 			json_object_set_new(rl, "description", json_string(room->room_name));
 			json_object_set_new(rl, "sampling_rate", json_integer(room->sampling_rate));
 			json_object_set_new(rl, "spatial_audio", room->spatial_audio ? json_true() : json_false());
+			json_object_set_new(rl, "use_limiter", room->use_limiter ? json_true() : json_false());
 			json_object_set_new(rl, "pin_required", room->room_pin ? json_true() : json_false());
 			json_object_set_new(rl, "record", g_atomic_int_get(&room->record) ? json_true() : json_false());
 			json_object_set_new(rl, "muted", room->muted ? json_true() : json_false());
