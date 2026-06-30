@@ -126,14 +126,14 @@ static float approximation_params_q[K_INTERPOLATED_GAIN_CURVE_TOTAL_POINTS] = {
 };
 
 /* Function pointers for the selected implementation */
-static void (*compute_max_envelope_func)(opus_int32 *buffer, float envelope[K_SUB_FRAMES_IN_FRAME], int samples_in_sub_frame) = NULL;
-static void (*calculate_scaling_factors_func)(float envelope[K_SUB_FRAMES_IN_FRAME], float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1], float *last_scaling_factor) = NULL;
-static void (*compute_per_sample_scaling_factors_func)(float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1], float *per_sample_scaling_factors, int samples_in_sub_frame) = NULL;
-static void (*scale_buffer_func)(opus_int32 *buffer, int samples, float *per_sample_scaling_factors, opus_int16 *outBuffer) = NULL;
-static void (*clamp_buffer_func)(opus_int32 *buffer, int samples, opus_int16 *outBuffer) = NULL;
+static void (*janus_audiobridge_compute_max_envelope_func)(opus_int32 *buffer, float envelope[K_SUB_FRAMES_IN_FRAME], int samples_in_sub_frame) = NULL;
+static void (*janus_audiobridge_calculate_scaling_factors_func)(float envelope[K_SUB_FRAMES_IN_FRAME], float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1], float *last_scaling_factor) = NULL;
+static void (*janus_audiobridge_compute_per_sample_scaling_factors_func)(float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1], float *per_sample_scaling_factors, int samples_in_sub_frame) = NULL;
+static void (*janus_audiobridge_scale_buffer_func)(opus_int32 *buffer, int samples, float *per_sample_scaling_factors, opus_int16 *outBuffer) = NULL;
+static void (*janus_audiobridge_clamp_buffer_func)(opus_int32 *buffer, int samples, opus_int16 *outBuffer) = NULL;
 
 #if defined(__AVX2__)
-static void compute_max_envelope_avx2(opus_int32 *buffer, float envelope[K_SUB_FRAMES_IN_FRAME], int samples_in_sub_frame){
+static void janus_audiobridge_compute_max_envelope_avx2(opus_int32 *buffer, float envelope[K_SUB_FRAMES_IN_FRAME], int samples_in_sub_frame){
    /* Compute max envelope without smoothing. */
    int sub_frame, sample_in_sub_frame;
     /* AVX2 implementation - process 8 32-bit integers at a time */
@@ -176,7 +176,7 @@ static void compute_max_envelope_avx2(opus_int32 *buffer, float envelope[K_SUB_F
         }
     }
 }
-static void calculate_scaling_factors_avx2(
+static void janus_audiobridge_calculate_scaling_factors_avx2(
     float envelope[K_SUB_FRAMES_IN_FRAME],
     float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1],
     float *last_scaling_factor) {
@@ -283,7 +283,7 @@ static void calculate_scaling_factors_avx2(
     *last_scaling_factor = scaling_factors[K_SUB_FRAMES_IN_FRAME];
 }
 
-static void compute_per_sample_scaling_factors_avx2(
+static void janus_audiobridge_compute_per_sample_scaling_factors_avx2(
     float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1],
     float *per_sample_scaling_factors,
     int samples_in_sub_frame) {
@@ -329,7 +329,7 @@ static void compute_per_sample_scaling_factors_avx2(
     }
 }
 
-static void scale_buffer_avx2(
+static void janus_audiobridge_scale_buffer_avx2(
     opus_int32 *buffer,
     int samples,
     float *per_sample_scaling_factors,
@@ -366,7 +366,7 @@ static void scale_buffer_avx2(
         outBuffer[i] = sample;
     }
 }
-static void clamp_buffer_avx2(opus_int32 *buffer, int samples, opus_int16 *outBuffer){
+static void janus_audiobridge_clamp_buffer_avx2(opus_int32 *buffer, int samples, opus_int16 *outBuffer){
     int i = 0;
     /* Process 8 elements at a time */
     for (; i + 8 <= samples; i += 8) {
@@ -393,7 +393,7 @@ static void clamp_buffer_avx2(opus_int32 *buffer, int samples, opus_int16 *outBu
 }
 #endif
 #if defined(__SSE4_2__)
-static void scale_buffer_sse42(
+static void janus_audiobridge_scale_buffer_sse42(
     opus_int32 *buffer,
     int samples,
     float *per_sample_scaling_factors,
@@ -428,7 +428,7 @@ static void scale_buffer_sse42(
     }
 }
 
-static void compute_per_sample_scaling_factors_sse42(
+static void janus_audiobridge_compute_per_sample_scaling_factors_sse42(
     float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1],
     float *per_sample_scaling_factors,
     int samples_in_sub_frame) {
@@ -474,7 +474,7 @@ static void compute_per_sample_scaling_factors_sse42(
         }
     }
 }
-static void compute_max_envelope_sse42(opus_int32 *buffer, float envelope[K_SUB_FRAMES_IN_FRAME], int samples_in_sub_frame){
+static void janus_audiobridge_compute_max_envelope_sse42(opus_int32 *buffer, float envelope[K_SUB_FRAMES_IN_FRAME], int samples_in_sub_frame){
    /* Compute max envelope without smoothing. */
    int sub_frame, sample_in_sub_frame;
     /* SSE4.2 implementation - process 4 floats at a time */
@@ -514,7 +514,7 @@ static void compute_max_envelope_sse42(opus_int32 *buffer, float envelope[K_SUB_
         }
     }
 }
-static void calculate_scaling_factors_sse42(
+static void janus_audiobridge_calculate_scaling_factors_sse42(
     float envelope[K_SUB_FRAMES_IN_FRAME],
     float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1],
     float *last_scaling_factor) {
@@ -621,7 +621,7 @@ static void calculate_scaling_factors_sse42(
     *last_scaling_factor = scaling_factors[K_SUB_FRAMES_IN_FRAME];
 }
 
-static void clamp_buffer_sse42(opus_int32 *buffer, int samples, opus_int16 *outBuffer){
+static void janus_audiobridge_clamp_buffer_sse42(opus_int32 *buffer, int samples, opus_int16 *outBuffer){
     int i = 0;
     /* Process 4 elements at a time */
     for (; i + 4 <= samples; i += 4) {
@@ -645,7 +645,7 @@ static void clamp_buffer_sse42(opus_int32 *buffer, int samples, opus_int16 *outB
 }
 #endif
 
-static void compute_max_envelope_scalar(opus_int32 *buffer, float envelope[K_SUB_FRAMES_IN_FRAME], int samples_in_sub_frame){
+static void janus_audiobridge_compute_max_envelope_scalar(opus_int32 *buffer, float envelope[K_SUB_FRAMES_IN_FRAME], int samples_in_sub_frame){
    /* Compute max envelope without smoothing. */
    int sub_frame, sample_in_sub_frame;
     for (sub_frame = 0; sub_frame < K_SUB_FRAMES_IN_FRAME; ++sub_frame) {
@@ -655,13 +655,13 @@ static void compute_max_envelope_scalar(opus_int32 *buffer, float envelope[K_SUB
     }
 }
 
-static inline __attribute__((always_inline)) void compute_envelope(
+static inline __attribute__((always_inline)) void janus_audiobridge_compute_envelope(
     opus_int32 *buffer,
     float envelope[K_SUB_FRAMES_IN_FRAME],
     int samples_in_sub_frame,
     float *filter_state_level) {
     int sub_frame;
-    compute_max_envelope_func(buffer, envelope, samples_in_sub_frame);
+    janus_audiobridge_compute_max_envelope_func(buffer, envelope, samples_in_sub_frame);
 
     /* Make sure envelope increases happen one step earlier so that the
      * corresponding *gain decrease* doesn't miss a sudden signal
@@ -683,7 +683,7 @@ static inline __attribute__((always_inline)) void compute_envelope(
         *filter_state_level = envelope[sub_frame];
     }
 }
-static void compute_per_sample_scaling_factors_scalar(
+static void janus_audiobridge_compute_per_sample_scaling_factors_scalar(
     float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1],
     float *per_sample_scaling_factors,
     int samples_in_sub_frame) {
@@ -708,7 +708,7 @@ static void compute_per_sample_scaling_factors_scalar(
     }
 }
 
-static void calculate_scaling_factors_scalar(
+static void janus_audiobridge_calculate_scaling_factors_scalar(
     float envelope[K_SUB_FRAMES_IN_FRAME],
     float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1],
     float *last_scaling_factor) {
@@ -749,7 +749,7 @@ static void calculate_scaling_factors_scalar(
     *last_scaling_factor = scaling_factors[K_SUB_FRAMES_IN_FRAME];
 }
 
-inline __attribute__((always_inline)) void compute_scaling_factors(
+inline __attribute__((always_inline)) void janus_audiobridge_compute_scaling_factors(
 	opus_int32 *buffer,
 	float envelope[K_SUB_FRAMES_IN_FRAME],
 	float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1],
@@ -762,12 +762,12 @@ inline __attribute__((always_inline)) void compute_scaling_factors(
 	 * Original WebRTC code: https://webrtc.googlesource.com/src
 	 * Licensed under BSD 3-Clause License.
 	 */
-	compute_envelope(buffer, envelope, samples_in_sub_frame, filter_state_level);
-	calculate_scaling_factors_func(envelope, scaling_factors, last_scaling_factor);
-	compute_per_sample_scaling_factors_func(scaling_factors, per_sample_scaling_factors, samples_in_sub_frame);
+	janus_audiobridge_compute_envelope(buffer, envelope, samples_in_sub_frame, filter_state_level);
+	janus_audiobridge_calculate_scaling_factors_func(envelope, scaling_factors, last_scaling_factor);
+	janus_audiobridge_compute_per_sample_scaling_factors_func(scaling_factors, per_sample_scaling_factors, samples_in_sub_frame);
 }
 
-static void scale_buffer_scalar(
+static void janus_audiobridge_scale_buffer_scalar(
     opus_int32 *buffer,
     int samples,
     float *per_sample_scaling_factors,
@@ -784,16 +784,16 @@ static void scale_buffer_scalar(
     }
 }
 
-inline __attribute__((always_inline)) void scale_buffer(
+inline __attribute__((always_inline)) void janus_audiobridge_scale_buffer(
     opus_int32 *buffer,
     int samples,
     float *per_sample_scaling_factors,
     opus_int16 *outBuffer){
-    scale_buffer_func(buffer, samples, per_sample_scaling_factors, outBuffer);
+    janus_audiobridge_scale_buffer_func(buffer, samples, per_sample_scaling_factors, outBuffer);
 }
 
 
-static void clamp_buffer_scalar(opus_int32 *buffer, int samples, opus_int16 *outBuffer){
+static void janus_audiobridge_clamp_buffer_scalar(opus_int32 *buffer, int samples, opus_int16 *outBuffer){
     int i;
     opus_int32 sample;
     for(i=0; i<samples; i++) {
@@ -806,53 +806,53 @@ static void clamp_buffer_scalar(opus_int32 *buffer, int samples, opus_int16 *out
     }
 }
 
-inline __attribute__((always_inline)) void clamp_buffer(opus_int32 *buffer, int samples, opus_int16 *outBuffer){
-    clamp_buffer_func(buffer, samples, outBuffer);
+inline __attribute__((always_inline)) void janus_audiobridge_clamp_buffer(opus_int32 *buffer, int samples, opus_int16 *outBuffer){
+    janus_audiobridge_clamp_buffer_func(buffer, samples, outBuffer);
 }
 
 #if defined(__AVX2__)
-inline __attribute__((always_inline)) void init_limiter_avx2(void) {
+inline __attribute__((always_inline)) void janus_audiobridge_init_limiter_avx2(void) {
     JANUS_LOG(LOG_INFO, "Using AVX2 implementation of limiter\n");
-    compute_max_envelope_func = compute_max_envelope_avx2;
-    calculate_scaling_factors_func = calculate_scaling_factors_avx2;
-    compute_per_sample_scaling_factors_func = compute_per_sample_scaling_factors_avx2;
-    scale_buffer_func = scale_buffer_avx2;
-    clamp_buffer_func = clamp_buffer_avx2;
+    janus_audiobridge_compute_max_envelope_func = janus_audiobridge_compute_max_envelope_avx2;
+    janus_audiobridge_calculate_scaling_factors_func = janus_audiobridge_calculate_scaling_factors_avx2;
+    janus_audiobridge_compute_per_sample_scaling_factors_func = janus_audiobridge_compute_per_sample_scaling_factors_avx2;
+    janus_audiobridge_scale_buffer_func = janus_audiobridge_scale_buffer_avx2;
+    janus_audiobridge_clamp_buffer_func = janus_audiobridge_clamp_buffer_avx2;
 }
 #endif
 
 #if defined(__SSE4_2__)
-inline __attribute__((always_inline)) void init_limiter_sse42(void) {
+inline __attribute__((always_inline)) void janus_audiobridge_init_limiter_sse42(void) {
     JANUS_LOG(LOG_INFO, "Using SSE4.2 implementation of limiter\n");
-        compute_max_envelope_func = compute_max_envelope_sse42;
-        calculate_scaling_factors_func = calculate_scaling_factors_sse42;
-        compute_per_sample_scaling_factors_func = compute_per_sample_scaling_factors_sse42;
-        scale_buffer_func = scale_buffer_sse42;
-        clamp_buffer_func = clamp_buffer_sse42;
+        janus_audiobridge_compute_max_envelope_func = janus_audiobridge_compute_max_envelope_sse42;
+        janus_audiobridge_calculate_scaling_factors_func = janus_audiobridge_calculate_scaling_factors_sse42;
+        janus_audiobridge_compute_per_sample_scaling_factors_func = janus_audiobridge_compute_per_sample_scaling_factors_sse42;
+        janus_audiobridge_scale_buffer_func = janus_audiobridge_scale_buffer_sse42;
+        janus_audiobridge_clamp_buffer_func = janus_audiobridge_clamp_buffer_sse42;
 }
 #endif
 
-inline __attribute__((always_inline)) void init_limiter_scalar(void) {
+inline __attribute__((always_inline)) void janus_audiobridge_init_limiter_scalar(void) {
     JANUS_LOG(LOG_INFO, "Using scalar implementation of limiter\n");
-    compute_max_envelope_func = compute_max_envelope_scalar;
-    calculate_scaling_factors_func = calculate_scaling_factors_scalar;
-    compute_per_sample_scaling_factors_func = compute_per_sample_scaling_factors_scalar;
-    scale_buffer_func = scale_buffer_scalar;
-    clamp_buffer_func = clamp_buffer_scalar;
+    janus_audiobridge_compute_max_envelope_func = janus_audiobridge_compute_max_envelope_scalar;
+    janus_audiobridge_calculate_scaling_factors_func = janus_audiobridge_calculate_scaling_factors_scalar;
+    janus_audiobridge_compute_per_sample_scaling_factors_func = janus_audiobridge_compute_per_sample_scaling_factors_scalar;
+    janus_audiobridge_scale_buffer_func = janus_audiobridge_scale_buffer_scalar;
+    janus_audiobridge_clamp_buffer_func = janus_audiobridge_clamp_buffer_scalar;
 }
 
-inline __attribute__((always_inline)) void init_limiter(void) {
+inline __attribute__((always_inline)) void janus_audiobridge_init_limiter(void) {
     #if defined(__AVX2__)
     if (has_avx2()) {
-        init_limiter_avx2();
+        janus_audiobridge_init_limiter_avx2();
         return;
     }
     #endif
     #if defined(__SSE4_2__)
     if (has_sse42()) {
-        init_limiter_sse42();
+        janus_audiobridge_init_limiter_sse42();
         return;
     }
     #endif
-    init_limiter_scalar();
+    janus_audiobridge_init_limiter_scalar();
 }

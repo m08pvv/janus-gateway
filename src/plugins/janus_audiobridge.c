@@ -2574,7 +2574,7 @@ int janus_audiobridge_init(janus_callbacks *callback, const char *config_path) {
 
 	/* Setting function pointers according to runtime vectorization support (AVX2, SSE4.2 or scalar) */
 	JANUS_LOG(LOG_INFO, "Initializing optimized limiter implementation\n");
-	init_limiter();
+	janus_audiobridge_init_limiter();
 
 	/* Parse configuration to populate the rooms list */
 	if(config != NULL) {
@@ -8953,16 +8953,16 @@ static void *janus_audiobridge_mixer_thread(void *data) {
 		}
 		/* If limiter is enabled and we use limiter (i.e. there are at least 2 tracks mixed) we should initialize it */
 		if(audiobridge->use_limiter && mix_count > 1)
-			compute_scaling_factors(buffer, envelope, scaling_factors, per_sample_scaling_factors, 
+			janus_audiobridge_compute_scaling_factors(buffer, envelope, scaling_factors, per_sample_scaling_factors, 
 				samples_in_sub_frame, &filter_state_level, &last_scaling_factor);
 		
 		/* Always calculate the full mix when limiter is enabled and we have multiple mixed tracks */
 		if(audiobridge->use_limiter && mix_count > 1) {
 			/* Apply limiter to create the fullmix_buffer */
-			scale_buffer(buffer, samples, per_sample_scaling_factors, fullmix_buffer);
+			janus_audiobridge_scale_buffer(buffer, samples, per_sample_scaling_factors, fullmix_buffer);
 		} else {
 			/* Otherwise just clamp values that are outside int16 boundaries */
-			clamp_buffer(buffer, samples, fullmix_buffer);
+			janus_audiobridge_clamp_buffer(buffer, samples, fullmix_buffer);
 		}
 		/* Are we recording the mix? (only do it if there's someone in, though...) */
 		if(audiobridge->recording != NULL && g_list_length(participants_list) > 0) {
@@ -9036,10 +9036,10 @@ static void *janus_audiobridge_mixer_thread(void *data) {
 				}
 				if(audiobridge->use_limiter && (mix_count - (curBuffer ? 1 : 0)) > 1) {
 					/* If we use limiter and sumBuffer contains mix of more than 1 track, apply it */
-					scale_buffer(sumBuffer, samples, per_sample_scaling_factors, outBuffer);
+					janus_audiobridge_scale_buffer(sumBuffer, samples, per_sample_scaling_factors, outBuffer);
 				} else {
 					/* Otherwise just clamp values that are outside int16 boundaries */
-					clamp_buffer(sumBuffer, samples, outBuffer);
+					janus_audiobridge_clamp_buffer(sumBuffer, samples, outBuffer);
 				}
 				mixBuffer = outBuffer;
 			} else {

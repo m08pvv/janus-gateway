@@ -72,7 +72,7 @@
 /* Defined as DbfsToLinear(kLimiterMaxInputLevelDbFs) */
 #define K_MAX_INPUT_LEVEL_LINEAR 36766.300710566735f
 
-void compute_scaling_factors(
+void janus_audiobridge_compute_scaling_factors(
     opus_int32 *buffer,
     float envelope[K_SUB_FRAMES_IN_FRAME],
     float scaling_factors[K_SUB_FRAMES_IN_FRAME + 1],
@@ -81,22 +81,22 @@ void compute_scaling_factors(
     float *filter_state_level,
     float *last_scaling_factor);
 
-void init_limiter(void);
-void init_limiter_scalar(void);
+void janus_audiobridge_init_limiter(void);
+void janus_audiobridge_init_limiter_scalar(void);
 
 #if defined(__AVX2__)
-void init_limiter_avx2(void);
+void janus_audiobridge_init_limiter_avx2(void);
 #endif
 
 #if defined(__SSE4_2__)
-void init_limiter_sse42(void);
+void janus_audiobridge_init_limiter_sse42(void);
 #endif
 
-void scale_buffer(
+void janus_audiobridge_scale_buffer(
     opus_int32 *buffer,
     int samples,
     float *per_sample_scaling_factors,
     opus_int16 *outBuffer);
 
-void clamp_buffer(opus_int32 *buffer, int samples, opus_int16 *outBuffer);
+void janus_audiobridge_clamp_buffer(opus_int32 *buffer, int samples, opus_int16 *outBuffer);
 #endif /* LIMITER_H */
